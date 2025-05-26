@@ -1,4 +1,4 @@
-FROM node:22-slim
+FROM node:22-slim AS builder
 
 WORKDIR /usr/src/app
 
@@ -8,4 +8,13 @@ RUN npm install
 
 COPY . .
 
-CMD ["npm", "run", "dev"]
+RUN npm run build
+
+FROM node:22-slim
+
+COPY package.json package-lock.json ./
+RUN npm ci
+
+COPY --from=builder /usr/src/app/build .
+
+CMD ["node", "index.js"]

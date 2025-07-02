@@ -20,7 +20,7 @@
     "@aidbox/node-server-sdk": "2.1.2",
     "@types/fhir": "^0.0.41",
     "dotenv": "16.5.0",
-    "sdc-qrf": "^0.3.27",
+    "sdc-qrf": "^0.3.28",
     "tslib": "^2.4.0"
   },
   "workspaces": [

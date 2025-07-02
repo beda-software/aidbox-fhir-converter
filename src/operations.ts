@@ -19,9 +19,24 @@ export const toAidboxFormat: TOperation<{
     const { resource } = req;
     assert.ok(resource, new ValidationError("resource required"));
 
-    const fceResource = toFirstClassExtension(resource);
+    if (resource.resourceType === "Bundle") {
+      const fceEntries = resource.entry.map((entry: any) => ({
+        ...entry,
+        resource: toFirstClassExtension(entry.resource),
+      }));
+      return {
+        resource: {
+          resource: {
+            ...resource,
+            entry: fceEntries,
+          },
+          status: 200,
+        },
+      };
+    }
 
-    return { resource: {resource: fceResource}, status: 200 };
+    const fceResource = toFirstClassExtension(resource);
+    return { resource: { resource: fceResource }, status: 200 };
   },
 };
 
@@ -34,8 +49,23 @@ export const toFHIRFormat: TOperation<{
     const { resource } = req;
     assert.ok(resource, new ValidationError("resource required"));
 
-    const fhirResource = fromFirstClassExtension(resource);
+    if (resource.resourceType === "Bundle") {
+      const fhirEntries = resource.entry.map((entry: any) => ({
+        ...entry,
+        resource: fromFirstClassExtension(entry.resource),
+      }));
+      return {
+        resource: {
+          resource: {
+            ...resource,
+            entry: fhirEntries,
+          },
+          status: 200,
+        },
+      };
+    }
 
-    return { resource: {resource: fhirResource}, status: 200 };
+    const fhirResource = fromFirstClassExtension(resource);
+    return { resource: { resource: fhirResource }, status: 200 };
   },
 };
